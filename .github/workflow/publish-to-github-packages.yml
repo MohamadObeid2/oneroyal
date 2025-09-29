@@ -1,4 +1,4 @@
-name: Deploy app to GitHub Pages
+name: Deploy HTML to GitHub Pages
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./
 
