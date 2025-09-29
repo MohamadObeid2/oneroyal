@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --accent-primary: #4361ee;
+            --accent-secondary: #3a0ca3;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #3fbfe7;
+            --accent-secondary: #4361ee;
+            --border-color: #404040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        #root {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Alert System */
+        #alert {
+            position: fixed;
+            top: 0;
+            left: calc(50vw - 175px);
+            z-index: 1000;
+            background: var(--error-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-50px);
+            transition: var(--transition);
+            width: 350px;
+            height: 50px;
+        }
+
+        #alert.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        #alert-text {
+            font-weight: 300;
+        }
+
+        /* Login Page */
+        #login {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            padding: 1rem;
+        }
+
+        #login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #login-form-container {
+            background: var(--bg-primary);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        #login-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #login-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        #username,
+        #password {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        #username:focus,
+        #password:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        #login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Portal Layout */
+        #portal {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-height: 100vh;
+        }
+
+        /* Header */
+        #header-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        #topbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.5rem;
+            height: 5rem;
+            margin: 0 auto;
+        }
+
+        #logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #logo:hover {
+            transform: scale(1.05);
+        }
+
+        #user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #username-btn {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        #logout {
+            background: var(--error-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        #logout:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content */
+        #main-container {
+            display: flex;
+            margin-top: 5rem;
+            height: calc(100% - 5rem);
+            width: 100%;
+        }
+
+        /* Sidebar - Desktop */
+        #sidebar-container {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+        }
+
+        #sidebar-main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0 .5rem;
+        }
+
+        .sidebar-item {
+            width: 100%;
+        }
+
+        .sidebar-item button {
+            width: 100%;
+            text-align: left;
+            padding: .75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-item button:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .sidebar-item button.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Mobile Bottom Bar */
+        .bottombar-container {
+            position: fixed;
+            bottom: 0;
+            display: none;
+            width: 100%;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 0 1rem;
+            backdrop-filter: blur(10px);
+            height: 5rem;
+        }
+
+        .bottombar-items {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .bottombar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            min-width: 60px;
+        }
+
+        .bottombar-item.active {
+            color: var(--accent-primary);
+        }
+
+        .bottombar-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .bottombar-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .bottombar-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Section */
+        #section-container {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            padding: 2rem;
+            background: var(--bg-primary);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Profile Section */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .profile-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas:
+                    "profile stats"
+                    "profile actions";
+            }
+
+            .profile-card {
+                grid-area: profile;
+            }
+
+            .stats-card {
+                grid-area: stats;
+            }
+
+            .actions-card {
+                grid-area: actions;
+            }
+        }
+
+        .profile-card,
+        .stats-card,
+        .actions-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .profile-email {
+            font-size: .9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .tier-premium {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        /* Stats Card */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        /* Actions Card */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: .8rem;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 1.25rem;
+        }
+
+        /* Accounts Section Styles */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: .5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-icon {
+            font-size: 2rem;
+            padding: 0.75rem;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .summary-value.profit {
+            color: var(--success-color);
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Accounts List */
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .account-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .account-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .account-card.inactive {
+            opacity: 0.7;
+        }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .account-id {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .account-meta {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .account-type,
+        .account-leverage,
+        .account-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .account-type {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .account-leverage {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .account-status.active {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .account-status.inactive {
+            background: var(--text-secondary);
+            color: white;
+        }
+
+        .account-balance {
+            text-align: right;
+        }
+
+        .balance-amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .profit-amount {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .profit-amount.positive {
+            color: var(--success-color);
+        }
+
+        .profit-amount.negative {
+            color: var(--error-color);
+        }
+
+        .account-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .account-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-outline {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: .8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .btn-outline:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-large-primary,
+        .btn-large-outline {
+            padding: 1rem 2rem;
+            border: none;
+            font-size: .9rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-large-primary {
+            background: var(--accent-primary);
+            color: white;
+            margin-left: auto;
+        }
+
+        .btn-large-outline {
+            background: transparent;
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn-large-primary:hover,
+        .btn-large-outline:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Section Header */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Terminal Section */
+        #info-panel {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        #price-container {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #chart-price-change {
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: var(--success-color);
+            color: white;
+        }
+
+        #chart-price-change.negative {
+            background: var(--error-color);
+        }
+
+        #symbol-container {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        #controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        #controls button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #chart-start-realtime {
+            background: var(--success-color);
+            font-size: 1rem;
+            color: white;
+        }
+
+        #chart-stop-realtime {
+            background: var(--error-color);
+            font-size: 1rem;
+            color: white;
+        }
+
+        #chart-reset {
+            background: var(--bg-secondary);
+            font-size: 1rem;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        #controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        #chart-main-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            min-height: 500px;
+        }
+
+        /* Profile & Accounts Sections */
+        .section-container p,
+        .section-container li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-container ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .section-container li {
+            background: var(--bg-secondary);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        .section-container li:hover {
+            transform: translateX(4px);
+            background: var(--bg-tertiary);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            border: none;
+            color: #f59e0b;
+            font-size: 5rem;
+            cursor: pointer;
+            display: flex;
+            background: transparent;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #main-container {
+                height: calc(100% - 10rem);
+            }
+
+            #sidebar-container {
+                display: none;
+                /* Hide desktop sidebar on mobile */
+            }
+
+            .bottombar-container {
+                display: flex;
+            }
+
+            #section-container {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            #topbar-container {
+                padding: 1rem;
+            }
+
+            #user-container {
+                gap: 0.5rem;
+            }
+
+            #controls {
+                flex-direction: column;
+            }
+
+            #controls button {
+                flex: 1;
+            }
+
+            #login-form-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .btn-large-primary {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #price-container {
+                font-size: 1.25rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            #info-panel {
+                padding: 1rem;
+            }
+
+            .btn-large-primary {
+                padding: 1rem;
+                margin-left: 0;
+            }
+        }
+
+        /* Animation for page transitions */
+        #page {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+    <title>OneRoyal Platform</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        let rootEl = document.getElementById("root");
+        let pageEl = null;
+        let themeBtnEl = null;
+        let alertEl = null;
+        let loginPageEl = null;
+        let portalPageEl = null;
+        let mainContainerEl = null;
+        let sectionContainerEl = null;
+        let terminalActive = true;
+        let alertTimer = null;
+        let chartCurrentPriceEl = null;
+        let chartPriceChange = null;
+
+        const icons = {
+            sun: `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>`,
+            moon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M9.37 5.51c-.18.64-.27 1.31-.27 1.99 0 4.08 3.32 7.4 7.4 7.4.68 0 1.35-.09 1.99-.27C17.45 17.19 14.93 19 12 19c-3.86 0-7-3.14-7-7 0-2.93 1.81-5.45 4.37-6.49zM12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>`,
+            profile: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
+            accounts: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+            terminal: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y1="19"></line></svg>`,
+            logout: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y1="12"></line></svg>`,
+        };
+    </script>
+    <script>
+        const storage = {
+            get: (key) => {
+                return sessionStorage.getItem(key);
+            },
+            set: (key, data) => {
+                sessionStorage.setItem(key, data);
+            },
+            rem: (key) => {
+                sessionStorage.removeItem(key);
+            }
+        }
+    </script>
+    <script>
+        const theme = {
+            set: (currentTheme = "light") => {
+                if (currentTheme === null) {
+                    currentTheme = "light";
+                }
+                storage.set("theme", currentTheme);
+                document.documentElement.setAttribute("data-theme", currentTheme);
+            },
+            get: () => {
+                return storage.get("theme");
+            },
+            toggle: () => {
+                let currentTheme = theme.get() === "light" ? "dark" : "light";
+                document.documentElement.setAttribute("data-theme", currentTheme);
+                theme.set(currentTheme);
+                theme.updateBtn();
+                chart.initializeChart();
+            },
+            updateBtn: () => {
+                if (theme.get() === "light") {
+                    themeBtnEl.innerHTML = icons.moon;
+                    themeBtnEl.style.color = "#4361ee";
+                } else {
+                    themeBtnEl.innerHTML = icons.sun;
+                    themeBtnEl.style.color = "#f59e0b";
+                }
+            },
+        }
+    </script>
+    <script>
+        const user = {
+            name: "M.Obeid",
+            username: "testLogin",
+            password: "testPassword",
+            session: "session1"
+        };
+
+        const auth = {
+            isloggedIn: () => {
+                const session = storage.get("session");
+                if (session === user.session) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            login: (username, password) => {
+                const verified = user.username === username && user.password === password;
+                if (verified) {
+                    storage.set("session", user.session);
+                    auth.alert(true, "Welcome to OneRoyal Platform!");
+                    return true;
+                } else {
+                    auth.alert(false, "Wrong username or password!");
+                    return false;
+                }
+            },
+            logout: () => {
+                storage.rem("session");
+            },
+            getClientName: () => {
+                return user.name;
+            },
+            alert: (verified, msg) => {
+                clearTimeout(alertTimer);
+                const alertTextEl = document.getElementById("alert-text");
+                alertTextEl.innerText = msg;
+                let bgcolor = "#28a745";
+                if (!verified) {
+                    bgcolor = "#dc3545";
+                }
+                alertEl.style.backgroundColor = bgcolor;
+                alertEl.style.transform = "translateY(0)";
+                const showAlert = () => alertEl.style.transform = "translateY(-100%)";
+                alertTimer = setTimeout(showAlert, 4000);
+            }
+        }
+    </script>
+    <script>
+        const page = {
+            renderPage: (pname) => {
+
+                if (!pageEl) { // 1st render
+                    page.renderRoot();
+                } else {
+                    pageEl.innerHTML = "";
+                }
+
+                if (pname === "login") {
+                    page.renderLogin();
+                } else if (pname === "portal") {
+                    page.renderPortal();
+                }
+            },
+            renderRoot: () => {
+                rootEl.innerHTML = `<div id="page"></div>`;
+                pageEl = document.getElementById("page");
+                ui.renderAlert();
+            },
+            renderLogin: () => {
+                pageEl.innerHTML = `<div id="login"></div>`;
+                ui.renderLoginForm();
+            },
+            renderPortal: () => {
+                pageEl.innerHTML = `<div id="portal"></div>`;
+                portalPageEl = document.getElementById("portal");
+                ui.renderHeader();
+                ui.renderSidebar();
+                ui.renderBottombar();
+                ui.renderSection("terminal");
+            }
+        };
+    </script>
+    <script>
+        const profileData = {
+            name: "Mohamad Obeid",
+            email: "mohamad.obeid.2@st.ul.edu.lb",
+            clientId: "CP-7842-2024",
+            joinDate: "March 15, 2023",
+            tier: "Premium",
+            status: "Active",
+            phone: "+1 (555) 123-4567",
+            country: "Lebanon",
+            lastLogin: "2 hours ago"
+        };
+
+        const profile = {
+            renderProfile: () => {
+
+                sectionContainerEl.innerHTML = `
+            <div class="section-header">
+                <h1 class="section-title">Profile</h1>
+                <p class="section-subtitle">Manage your account information and preferences</p>
+            </div>
+            
+            <div class="profile-grid">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="avatar">
+                            ${profileData.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div class="profile-info">
+                            <h2 class="profile-name">${profileData.name}</h2>
+                            <p class="profile-email">${profileData.email}</p>
+                            <div class="status-badge ${profileData.status.toLowerCase()}">
+                                ${profileData.status}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Client ID</span>
+                            <span class="detail-value">${profileData.clientId}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Member Since</span>
+                            <span class="detail-value">${profileData.joinDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Account Tier</span>
+                            <span class="detail-value tier-${profileData.tier.toLowerCase()}">${profileData.tier}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value">${profileData.phone}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Country</span>
+                            <span class="detail-value">${profileData.country}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Login</span>
+                            <span class="detail-value">${profileData.lastLogin}</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Stats Card -->
+                <div class="stats-card">
+                    <h3>Account Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-info">
+                                <span class="stat-value">247</span>
+                                <span class="stat-label">Trades This Month</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <span class="stat-value">78.5%</span>
+                                <span class="stat-label">Success Rate</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🕒</div>
+                            <div class="stat-info">
+                                <span class="stat-value">2.4Y</span>
+                                <span class="stat-label">Trading Experience</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-info">
+                                <span class="stat-value">Gold</span>
+                                <span class="stat-label">Trader Level</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Quick Actions -->
+                <div class="actions-card">
+                    <h3>Quick Actions</h3>
+                    <div class="actions-grid">
+                        <button class="action-btn">
+                            <span class="action-icon">✏️</span>
+                            Edit Profile
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">🔒</span>
+                            Security Settings
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📧</span>
+                            Contact Support
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📊</span>
+                            Trading Reports
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+            }
+        }
+    </script>
+    <script>
+        const accountsData = [
+            {
+                id: "ACC-7842-001",
+                type: "Standard",
+                balance: 15420.75,
+                currency: "USD",
+                equity: 16280.50,
+                margin: 1240.25,
+                freeMargin: 15040.25,
+                leverage: "1:100",
+                status: "Active",
+                profit: 859.75,
+                openTrades: 8
+            },
+            {
+                id: "ACC-7842-002",
+                type: "ECN Pro",
+                balance: 28500.00,
+                currency: "EUR",
+                equity: 31245.80,
+                margin: 2545.20,
+                freeMargin: 28700.60,
+                leverage: "1:200",
+                status: "Active",
+                profit: 2745.80,
+                openTrades: 12
+            },
+            {
+                id: "ACC-7842-003",
+                type: "Islamic",
+                balance: 8500.00,
+                currency: "USD",
+                equity: 8920.00,
+                margin: 420.00,
+                freeMargin: 8080.00,
+                leverage: "1:50",
+                status: "Inactive",
+                profit: 420.00,
+                openTrades: 0
+            }
+        ];
+
+        const accounts = {
+            renderAccounts: () => {
+
+                const totalBalance = accountsData.reduce((sum, acc) => sum + acc.balance, 0);
+                const totalEquity = accountsData.reduce((sum, acc) => sum + acc.equity, 0);
+                const totalProfit = accountsData.reduce((sum, acc) => sum + acc.profit, 0);
+
+                sectionContainerEl.innerHTML = `
+            <div class="section-header">
+                <h1 class="section-title">Accounts</h1>
+                <p class="section-subtitle">Manage your trading accounts and monitor performance</p>
+            </div>
+    
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon total-balance">💰</div>
+                    <div class="summary-info">
+                        <span class="summary-value">$${totalBalance.toLocaleString()}</span>
+                        <span class="summary-label">Total Balance</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon total-equity">📊</div>
+                    <div class="summary-info">
+                        <span class="summary-value">$${totalEquity.toLocaleString()}</span>
+                        <span class="summary-label">Total Equity</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon total-profit">📈</div>
+                    <div class="summary-info">
+                        <span class="summary-value profit">+$${totalProfit.toLocaleString()}</span>
+                        <span class="summary-label">Total Profit</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon active-accounts">✅</div>
+                    <div class="summary-info">
+                        <span class="summary-value">${accountsData.filter(acc => acc.status === 'Active').length}</span>
+                        <span class="summary-label">Active Accounts</span>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Accounts List -->
+            <div class="accounts-list">
+                ${accountsData.map(account => `
+                <div class="account-card ${account.status.toLowerCase()}">
+                    <div class="account-header">
+                        <div class="account-info">
+                            <h3 class="account-id">${account.id}</h3>
+                            <div class="account-meta">
+                                <span class="account-type">${account.type}</span>
+                                <span class="account-leverage">${account.leverage}</span>
+                                <span class="account-status ${account.status.toLowerCase()}">${account.status}</span>
+                            </div>
+                        </div>
+                        <div class="account-balance">
+                            <span class="balance-amount">${account.currency} ${account.balance.toLocaleString()}</span>
+                            <span class="profit-amount ${account.profit >= 0 ? 'positive' : 'negative'}">
+                                ${account.profit >= 0 ? '+' : ''}${account.currency} ${account.profit.toLocaleString()}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="account-details">
+                        <div class="detail-row">
+                            <div class="detail-col">
+                                <span class="detail-label">Equity</span>
+                                <span class="detail-value">${account.currency} ${account.equity.toLocaleString()}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">Margin</span>
+                                <span class="detail-value">${account.currency} ${account.margin.toLocaleString()}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">Free Margin</span>
+                                <span class="detail-value">${account.currency} ${account.freeMargin.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-col">
+                                <span class="detail-label">Open Trades</span>
+                                <span class="detail-value">${account.openTrades}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">Currency</span>
+                                <span class="detail-value">${account.currency}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value status-${account.status.toLowerCase()}">${account.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="account-actions">
+                        <button class="btn-secondary">View Details</button>
+                        <button class="btn-primary">Trade</button>
+                        <button class="btn-outline">Deposit</button>
+                    </div>
+                </div>
+                `).join('')}
+            </div>
+    
+            <!-- Quick Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-large-primary">
+                    New Account
+                </button>
+                <button class="btn-large-outline">
+                    Fund Accounts
+                </button>
+            </div>`;
+            }
+        }
+    </script>
+    <script>
+        const terminal = {
+            renderTerminal: async () => {
+                try {
+                    terminalActive = true;
+                    await chart.injectTradingViewScript();
+                    sectionContainerEl.innerHTML = `
+            <h1 class="section-title">TradingView Chart</h1>
+            
+            <div id="info-panel">
+                <div id="price-container">
+                    Current Price: <span id="chart-current-price">$100.00</span> 
+                    <span id="chart-price-change">(+0.00%)</span>
+                </div>
+                <div id="symbol-contianer">
+                    Symbol: <strong>MOCKSTOCK</strong> | Timeframe: <strong>1D</strong>
+                </div>
+            </div>
+            
+            <div id="controls">
+                <button id="chart-start-realtime">Start Real-time Data</button>
+                <button id="chart-stop-realtime">Stop Real-time Data</button>
+                <button id="chart-reset">Reset Chart</button>
+            </div>
+            
+            <div id="chart-main-container"></div>`
+
+
+                    chartCurrentPriceEl = document.getElementById('chart-current-price');
+                    chartPriceChange = document.getElementById('chart-price-change');
+
+                    document.getElementById('chart-start-realtime').addEventListener('click', chart.startRealTimeData);
+                    document.getElementById('chart-stop-realtime').addEventListener('click', chart.stopRealTimeData);
+                    document.getElementById('chart-reset').addEventListener('click', chart.resetChart);
+
+                    chart.initializeChart();
+                } catch (error) {
+                    console.log(`Error loading TradingView: ${error}`);
+                }
+            },
+        }
+    </script>
+    <script>
+        const ui = {
+            renderAlert: () => {
+
+                rootEl = document.getElementById("root");
+                alertEl = document.createElement("alert");
+                alertEl.id = "alert";
+                alertEl.innerHTML = `<div id="alert-text"></div>`
+                rootEl.appendChild(alertEl);
+            },
+            renderLoginForm: () => {
+
+                loginPageEl = document.getElementById("login");
+                loginPageEl.innerHTML = `
+        <div id="login-form-container">
+            <h1 id="login-title">Login Form</h1>
+            <div id="login-input-container">
+                <input id="username" placeholder="Username">
+                <input id="password" type="password" placeholder="Password">
+            </div>
+            <button id="login-btn">Login</button>
+        </div>`;
+
+                const loginHandler = () => {
+
+                    const usernameEl = document.getElementById("username");
+                    const passwordEl = document.getElementById("password");
+
+                    const verified = auth.login(usernameEl.value, passwordEl.value);
+                    if (verified) {
+                        page.renderPage("portal");
+                    }
+                }
+
+                document.getElementById('password').addEventListener('keyup', (e) => e.key === "Enter" && loginHandler());
+                document.getElementById('login-btn').addEventListener('click', loginHandler);
+            },
+            renderHeader: () => {
+
+                const headerContainerEl = document.createElement("div");
+                headerContainerEl.id = "header-container";
+                headerContainerEl.innerHTML = `
+        <div id="topbar-container">
+            <div id="logo-contianer">
+                <span id="logo">OneRoyal</span>
+            </div>
+            <div id="user">
+                <button id="theme-toggle" class="theme-toggle"></button>
+                <span id="username-btn">Hi, ${auth.getClientName()}</span>
+                <button id="logout">Logout</button>
+            </div>
+        </div>`;
+                portalPageEl.appendChild(headerContainerEl);
+                themeBtnEl = document.getElementById('theme-toggle');
+
+                const itemHandler = (e) => {
+                    ui.renderSection("profile");
+                }
+
+                const logoutHandler = () => {
+                    sectionContainerEl = null;
+                    loginPageEl = null;
+                    portalPageEl = null;
+                    mainContainerEl = null;
+                    auth.logout();
+                    page.renderPage("login");
+                }
+
+                document.getElementById('logo').addEventListener('click', itemHandler);
+                document.getElementById('logout').addEventListener('click', logoutHandler);
+                themeBtnEl.addEventListener('click', theme.toggle);
+                theme.updateBtn();
+            },
+            renderBottombar: () => {
+
+                bottombarEl = document.createElement("div");
+                bottombarEl.classList = "bottombar-container";
+                bottombarEl.innerHTML = `
+        <div class="bottombar-items">
+            <button class="bottombar-item" data-section="profile">
+                <div class="bottombar-icon">${icons.profile}</div>
+                <span class="bottombar-label">Profile</span>
+            </button>
+            <button class="bottombar-item" data-section="accounts">
+                <div class="bottombar-icon">${icons.accounts}</div>
+                <span class="bottombar-label">Accounts</span>
+            </button>
+            <button class="bottombar-item" data-section="terminal">
+                <div class="bottombar-icon">${icons.terminal}</div>
+                <span class="bottombar-label">Terminal</span>
+            </button>
+        </div>`
+                portalPageEl.appendChild(bottombarEl);
+
+                document.querySelectorAll('.bottombar-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const section = e.currentTarget.dataset.section;
+                        ui.renderSection(section);
+                        ui.updateActiveState(section);
+                    });
+                });
+            },
+            renderSidebar: () => {
+
+                mainContainerEl = document.createElement("div");
+                mainContainerEl.id = "main-container";
+                portalPageEl.appendChild(mainContainerEl);
+
+                const sidebarContainerEl = document.createElement("div");
+                sidebarContainerEl.id = "sidebar-container";
+                sidebarContainerEl.innerHTML = `
+        <div id="sidebar-main-container">
+            <div class="sidebar-item">
+                <button id="profile">
+                    <div class="icon">${icons.profile}</div>
+                    Profile
+                </button>
+            </div>
+            <div class="sidebar-item">
+                <button id="accounts">
+                    <div class="icon">${icons.accounts}</div>
+                    Accounts
+                </button>
+            </div>
+            <div class="sidebar-item">
+                <button id="terminal">
+                    <div class="icon">${icons.terminal}</div>
+                    Terminal
+                </button>
+            </div>
+        </div>`;
+
+                mainContainerEl.appendChild(sidebarContainerEl);
+
+                const sectionHandler = (e) => {
+                    let section = e.target.id;
+                    ui.renderSection(section);
+                    ui.updateActiveState(section);
+                }
+
+                document.getElementById('profile').addEventListener('click', sectionHandler);
+                document.getElementById('accounts').addEventListener('click', sectionHandler);
+                document.getElementById('terminal').addEventListener('click', sectionHandler);
+            },
+            renderSection: (section) => {
+                terminalActive = false;
+
+                if (!sectionContainerEl) {
+                    sectionContainerEl = document.createElement("div");
+                    sectionContainerEl.id = "section-container";
+                    mainContainerEl.appendChild(sectionContainerEl);
+                }
+
+                ui.updateActiveState(section);
+                sectionContainerEl.innerHTML = "";
+
+                if (section === "profile") {
+                    profile.renderProfile();
+                } else if (section === "accounts") {
+                    accounts.renderAccounts();
+                } else if (section === "terminal") {
+                    terminal.renderTerminal();
+                }
+            },
+            updateActiveState: (section) => {
+
+                document.querySelectorAll('.bottombar-item').forEach(item => {
+                    item.classList.toggle('active', item.dataset.section === section);
+                });
+
+                document.querySelectorAll('.sidebar-item button').forEach(btn => {
+                    btn.classList.toggle('active', btn.id === section);
+                });
+            },
+        }
+    </script>
+    <script>
+        let realTimeCallback = null;
+        let realTimeInterval = null;
+        let currentPrice = 100;
+        let historicalData = [];
+
+        const chart = {
+            injectTradingViewScript: () => {
+                return new Promise((resolve, reject) => {
+
+                    const injected = document.getElementById("trading-view");
+                    if (injected) {
+                        resolve(true);
+                        return;
+                    }
+                    const script = document.createElement("script");
+                    script.id = "trading-view";
+                    script.type = "text/javascript";
+                    script.src = "https://s3.tradingview.com/tv.js";
+                    script.async = true;
+
+                    script.onload = () => {
+                        resolve(true);
+                    };
+
+                    script.onerror = (error) => {
+                        reject(error);
+                    };
+
+                    document.head.appendChild(script);
+                });
+            },
+            initializeChart: () => {
+
+                if (!terminalActive) return;
+
+                chart.generateHistoricalData();
+
+                // Note that the datafeed will not work due to free package limitations
+                // This is only for showing structure
+                const datafeed = {
+                    onReady: (callback) => {
+                        console.log('Datafeed is ready');
+                        setTimeout(() => {
+                            callback({
+                                supports_search: true,
+                                supports_group_request: false,
+                                supports_timescale_marks: false,
+                                supports_time: true,
+                                supported_resolutions: ['1D', 'D']
+                            });
+                        }, 0);
+                    },
+                    searchSymbols: (userInput, exchange, symbolType, onResultReadyCallback) => {
+                        onResultReadyCallback([]);
+                    },
+                    resolveSymbol: (symbolName, onResolve, onError) => {
+                        const symbolInfo = {
+                            name: symbolName,
+                            description: "Mock Stock Data",
+                            type: "stock",
+                            session: "24x7",
+                            timezone: "Etc/UTC",
+                            ticker: symbolName,
+                            minmov: 1,
+                            pricescale: 100,
+                            has_intraday: false,
+                            has_daily: true,
+                            has_weekly_and_monthly: false,
+                            supported_resolutions: ['1D', 'D'],
+                            volume_precision: 2,
+                            data_status: "streaming"
+                        };
+                        setTimeout(() => onResolve(symbolInfo), 0);
+
+                    },
+                    getBars: (symbolInfo, resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest) => {
+                        onHistoryCallback(historicalData, { noData: historicalData.length === 0 });
+                    },
+                    subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback) => {
+                        // Subscribe to real-time data
+                        console.log('Subscribing to real-time data');
+                        realTimeCallback = onRealtimeCallback;
+                        chart.startRealTimeData();
+                    },
+                    unsubscribeBars: (subscriberUID) => {
+                        // Unsubscribe from real-time data
+                        console.log('Unsubscribing from real-time data');
+                        realTimeCallback = null;
+                        chart.stopRealTimeData();
+                    }
+                };
+
+                try {
+                    new TradingView.widget({
+                        container_id: "chart-main-container",
+                        width: "100%",
+                        height: "500px",
+                        symbol: "NASDAQ:AAPL",
+                        interval: "D",
+                        timezone: "Etc/UTC",
+                        theme: storage.get("theme"),
+                        style: "1",
+                        locale: "en",
+                        toolbar_bg: "#f1f3f6",
+                        enable_publishing: false,
+                        hide_top_toolbar: false,
+                        hide_legend: true,
+                        save_image: false,
+                        studies: [],
+                        datafeed,
+                    });
+
+                    const iframe = document.querySelector('iframe');
+                    iframe.onload = function () {
+                        console.log('TradingView widget created successfully');
+                        chart.startRealTimeData();
+                    };
+
+                } catch (error) {
+                    console.error('Error creating TradingView widget:', error);
+                }
+
+            },
+            generateHistoricalData: () => {
+                let _historicalData = [];
+
+                let basePrice = 100;
+                const baseTime = Date.now() - (30 * 24 * 60 * 60 * 1000);
+
+                for (let i = 0; i < 30; i++) {
+                    const time = baseTime + (i * 24 * 60 * 60 * 1000);
+
+                    const changePercent = (Math.random() * 4 - 2) / 100;
+                    const open = basePrice;
+                    const close = basePrice * (1 + changePercent);
+
+                    const minPrice = Math.min(open, close);
+                    const maxPrice = Math.max(open, close);
+
+                    const high = maxPrice + (Math.random() * basePrice * 0.01);
+                    const low = minPrice - (Math.random() * basePrice * 0.01);
+
+                    const volume = Math.floor(Math.random() * 9000) + 1000;
+
+                    _historicalData.push({
+                        time: Math.floor(time / 1000),
+                        open: open,
+                        high: high,
+                        low: low,
+                        close: close,
+                        volume: volume
+                    });
+
+                    basePrice = close;
+                }
+
+                historicalData = _historicalData;
+                currentPrice = historicalData[historicalData.length - 1].close;
+            },
+            startRealTimeData: () => {
+                if (realTimeInterval) {
+                    return;
+                }
+
+                chart.initializeChart();
+                realTimeInterval = setInterval(chart.updatePrice, 2000);
+            },
+            stopRealTimeData: () => {
+                if (realTimeInterval) {
+                    clearInterval(realTimeInterval);
+                    realTimeInterval = null;
+                }
+            },
+            resetChart: () => {
+
+                chart.stopRealTimeData();
+                chart.initializeChart();
+
+                // Update display
+                document.getElementById('chart-current-price').textContent = currentPrice.toFixed(2);
+                document.getElementById('chart-price-change').textContent = '(0.00%)';
+                document.getElementById('chart-price-change').className = '';
+            },
+            updatePrice: () => {
+
+                if (!chartCurrentPriceEl) return;
+
+                //if (!realTimeCallback) return;
+
+                // -0.5% to +0.5%
+                const changePercent = (Math.random() * 1 - 0.5) / 100;
+                const newPrice = currentPrice * (1 + changePercent);
+                const now = Math.floor(Date.now() / 86400000) * 86400;
+
+                const bar = {
+                    time: now,
+                    open: currentPrice,
+                    high: Math.max(currentPrice, newPrice),
+                    low: Math.min(currentPrice, newPrice),
+                    close: newPrice,
+                    volume: Math.floor(Math.random() * 1000) + 100
+                };
+
+                //realTimeCallback(bar);
+
+                currentPrice = newPrice;
+                const priceChange = ((newPrice - 100) / 100 * 100).toFixed(2);
+                const changeClass = priceChange >= 0 ? 'price-up' : 'price-down';
+                const changeSign = priceChange >= 0 ? '+' : '';
+
+                chartCurrentPriceEl.textContent = `$${newPrice.toFixed(2)}`;
+                chartPriceChange.textContent = `(${changeSign}${priceChange}%)`;
+                chartPriceChange.className = changeClass;
+
+            }
+        }
+    </script>
+    <script>
+        const main = () => {
+
+            theme.set(theme.get());
+
+            const loggedIn = auth.isloggedIn();
+            if (loggedIn) {
+                page.renderPage("portal");
+            } else {
+                page.renderPage("login");
+            }
+        }
+
+        main();
+    </script>
+</body>
+
+</html>
