@@ -5,7 +5,7 @@ const profileData = {
     joinDate: "March 15, 2023",
     tier: "Premium",
     status: "Active",
-    phone: "+961 81 026725",
+    phone: "+961 81 026 725",
     country: "Lebanon",
     lastLogin: "2 hours ago"
 };
